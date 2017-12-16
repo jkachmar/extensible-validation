@@ -3,6 +3,7 @@ module Validator.Email where
 import Prelude
 
 import Data.Either (fromRight)
+import Data.List.NonEmpty (NonEmptyList, singleton)
 import Data.String.Regex (Regex, regex, test)
 import Data.String.Regex.Flags (noFlags)
 import Data.Validation.Semigroup (V, invalid)
@@ -24,15 +25,15 @@ emailRegex =
   unsafeRegexFromString "^\\w+([.-]?\\w+)*@\\w+([.-]?\\w+)*(\\.\\w{2,3})+$"
 
 -- | The type of email address validation errors.
-type EmailAddressError r = Variant (emailAddress :: String | r)
+type InvalidEmail r = Variant (invalidEmail :: String | r)
 
 -- | Validate that some input string is a valid email address.
 validateEmailAddress
   :: ∀ r
    . String
-  -> V (Array (EmailAddressError r)) String
+  -> V (NonEmptyList (InvalidEmail r)) String
 validateEmailAddress input
   | test emailRegex input = pure input
   | otherwise =
-    let err = inj (SProxy :: SProxy "emailAddress") input
-    in invalid [err]
+    let err = inj (SProxy :: SProxy "invalidEmail") input
+    in invalid $ singleton err
