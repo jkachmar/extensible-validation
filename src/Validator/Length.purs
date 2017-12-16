@@ -67,7 +67,7 @@ validateLength
   :: ∀ r t a
    . Foldable t
   => {minLength :: Int, maxLength :: Int}
-  -> t a
+  -> (t a)
   -> V (NonEmptyList (TooLongOrShort r)) (t a)
 validateLength {minLength, maxLength} input =
   validateMinimumLength minLength input

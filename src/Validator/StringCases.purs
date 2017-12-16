@@ -10,7 +10,7 @@ import Data.Variant (SProxy(..), Variant, inj)
 --------------------------------------------------------------------------------
 -- | The type of errors for a string that has lowercase characters when it
 -- | should not.
-type HasLowercase r = Variant (hasLowercase  :: String | r)
+type HasLowercase r = Variant (hasLowercase :: Unit | r)
 
 -- | Validate that an input string only contains uppercase characters.
 validateAllUppercase
@@ -19,14 +19,14 @@ validateAllUppercase
   -> V (NonEmptyList (HasLowercase r)) String
 validateAllUppercase input
   | toLower input == input =
-    let err = inj (SProxy :: SProxy "hasLowercase") input
+    let err = inj (SProxy :: SProxy "hasLowercase") unit
     in invalid $ singleton err
   | otherwise = pure input
 
 --------------------------------------------------------------------------------
 -- | The type of errors for a string that has uppercase characters when it
 -- | should not.
-type HasUppercase r = Variant (hasUppercase  :: String | r)
+type HasUppercase r = Variant (hasUppercase :: Unit | r)
 
 -- | Validate that an input string only contains lowercase characters.
 validateAllLowercase
@@ -35,7 +35,7 @@ validateAllLowercase
   -> V (NonEmptyList (HasUppercase r)) String
 validateAllLowercase input
   | toLower input == input =
-    let err = inj (SProxy :: SProxy "hasUppercase") input
+    let err = inj (SProxy :: SProxy "hasUppercase") unit
     in invalid $ singleton err
   | otherwise = pure input
 
@@ -47,8 +47,8 @@ validateAllLowercase input
 -- | tags from the previous two validators.
 type NonMixedCase r
   = Variant
-  ( hasUppercase :: String
-  , hasLowercase :: String
+  ( hasUppercase :: Unit
+  , hasLowercase :: Unit
   | r
   )
 
